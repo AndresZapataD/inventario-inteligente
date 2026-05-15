@@ -1,3 +1,8 @@
+// ==========================================
+// Entidad principal que almacena la información general de los productos del inventario
+// ==========================================
+
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 

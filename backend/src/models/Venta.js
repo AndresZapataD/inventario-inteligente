@@ -1,3 +1,7 @@
+// ==========================================
+// Entidad que registra las ventas realizadas dentro del sistema
+// ==========================================
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 

@@ -1,3 +1,7 @@
+// ==========================================
+// Entidad encargada de almacenar los tipos de roles del sistema, como administrador o empleado
+// ==========================================
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 

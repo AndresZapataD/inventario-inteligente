@@ -1,3 +1,8 @@
+// ==========================================
+// Entidad utilizada para clasificar los productos según su tipo o categoría
+// ==========================================
+
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 

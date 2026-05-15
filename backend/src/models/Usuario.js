@@ -1,3 +1,7 @@
+//==========================================================
+//Entidad que almacena la información de los usuarios que utilizan el sistema y su rol asignado
+//==========================================================
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
