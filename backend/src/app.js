@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
-dotenv.config();
 import express from "express";
 import { sequelize } from "./config/database.js";
+dotenv.config();
 
 // IMPORTAR MODELOS Y RELACIONES
 import "./models/index.js";
@@ -12,6 +12,7 @@ app.use(express.json());
 
 
 app.use("/api/roles", (await import("./routes/RolRoutes.js")).default);
+app.use("/api/usuario", (await import("./UsuarioRoutes.js")).default);
 
 // ==========================================
 // INICIAR SERVIDOR
