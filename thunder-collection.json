@@ -1,0 +1,33 @@
+{
+    "obtener todos los roles": {
+        "url": "http://localhost:3000/api/roles",
+        "method": "GET"
+    },
+
+    "obtener por id": {
+        "url": "http://localhost:3000/api/roles/:id",
+        "method": "GET"
+    },
+
+     "crear rol": {
+        "url": "http://localhost:3000/api/roles",
+        "method": "POST",
+        "body": {
+            "nombre": "admin"
+        }
+    },
+
+     "actualizar rol": {
+        "url": "http://localhost:3000/api/roles/:id",
+        "method": "PUT",
+        "body": {
+            "nombre": "admin"
+        }
+    },
+
+     "eliminar rol": {
+        "url": "http://localhost:3000/api/roles/:id",
+        "method": "DELETE"
+    }   
+
+}

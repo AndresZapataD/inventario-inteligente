@@ -11,6 +11,7 @@ const app = express();
 app.use(express.json());
 
 
+app.use("/api/roles", (await import("./routes/RolRoutes.js")).default);
 
 // ==========================================
 // INICIAR SERVIDOR

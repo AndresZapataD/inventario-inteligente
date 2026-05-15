@@ -15,3 +15,4 @@ export const Rol = sequelize.define("Rol", {
   }
 
 });
+export default Rol;
