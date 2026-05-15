@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
-export const Categoria = sequelize.define("Categoria", {
+export const Factura = sequelize.define("Factura", {
 
   id: {
     type: DataTypes.UUID,
@@ -9,12 +9,12 @@ export const Categoria = sequelize.define("Categoria", {
     primaryKey: true
   },
 
-  nombre: {
+  numeroFactura: {
     type: DataTypes.STRING
   },
 
-  descripcion: {
-    type: DataTypes.TEXT
+  total: {
+    type: DataTypes.DECIMAL
   }
 
 });

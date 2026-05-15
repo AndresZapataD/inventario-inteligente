@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
-export const Categoria = sequelize.define("Categoria", {
+export const Rol = sequelize.define("Rol", {
 
   id: {
     type: DataTypes.UUID,
@@ -10,11 +10,8 @@ export const Categoria = sequelize.define("Categoria", {
   },
 
   nombre: {
-    type: DataTypes.STRING
-  },
-
-  descripcion: {
-    type: DataTypes.TEXT
+    type: DataTypes.STRING,
+    allowNull: false
   }
 
 });

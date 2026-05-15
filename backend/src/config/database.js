@@ -1,13 +1,15 @@
 import { Sequelize } from "sequelize";
+import dotenv from "dotenv";
 
-const sequelize = new Sequelize(
-  "inventario_inteligente",
-  "postgres",
-  "1234",
+dotenv.config();
+
+export const sequelize = new Sequelize(
+  process.env.DB_NAME,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
   {
-    host: "localhost",
-    dialect: "postgres"
+    host: process.env.DB_HOST,
+    dialect: process.env.DB_DIALECT,
+    port: process.env.DB_PORT
   }
 );
-
-export default sequelize;

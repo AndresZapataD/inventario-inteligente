@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
-export const Categoria = sequelize.define("Categoria", {
+export const Usuario = sequelize.define("Usuario", {
 
   id: {
     type: DataTypes.UUID,
@@ -13,8 +13,18 @@ export const Categoria = sequelize.define("Categoria", {
     type: DataTypes.STRING
   },
 
-  descripcion: {
-    type: DataTypes.TEXT
+  email: {
+    type: DataTypes.STRING,
+    unique: true
+  },
+
+  password: {
+    type: DataTypes.STRING
+  },
+
+  estado: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
   }
 
 });
