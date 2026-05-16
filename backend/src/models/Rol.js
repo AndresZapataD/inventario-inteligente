@@ -4,8 +4,8 @@ import { sequelize } from "../config/database.js";
 export const Rol = sequelize.define("Rol", {
 
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true
   },
 

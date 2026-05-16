@@ -11,7 +11,10 @@ const app = express();
 app.use(express.json());
 
 
+
 app.use("/api/roles", (await import("./routes/RolRoutes.js")).default);
+app.use("/api/categorias", (await import("./routes/CategoriaRoutes.js")).default);
+app.use("/api/productos", (await import("./routes/ProductoRoutes.js")).default);
 
 // ==========================================
 // INICIAR SERVIDOR

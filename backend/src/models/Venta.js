@@ -4,13 +4,13 @@ import { sequelize } from "../config/database.js";
 export const Venta = sequelize.define("Venta", {
 
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true
   },
 
   total: {
-    type: DataTypes.DECIMAL
+    type: DataTypes.DECIMAL(10, 2)
   },
 
   estado: {
