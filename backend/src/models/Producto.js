@@ -4,12 +4,16 @@ import { sequelize } from "../config/database.js";
 export const Producto = sequelize.define("Producto", {
 
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true
   },
 
   nombre: {
+    type: DataTypes.STRING
+  },
+
+  referencia: {
     type: DataTypes.STRING
   },
 
@@ -29,6 +33,16 @@ export const Producto = sequelize.define("Producto", {
   stockMinimo: {
     type: DataTypes.INTEGER,
     defaultValue: 5
+  },
+
+ categoria_id: {
+  type: DataTypes.INTEGER,
+  allowNull: false,
+  references: {
+    model: "Categoria",
+    key: "id"
   }
+}
+
 
 });

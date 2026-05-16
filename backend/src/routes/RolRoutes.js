@@ -8,4 +8,4 @@ router.post("/", RolController.create);
 router.put("/:id", RolController.update);
 router.delete("/:id", RolController.delete);
 
-export default router;
+export default router; 
