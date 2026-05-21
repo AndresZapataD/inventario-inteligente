@@ -1,4 +1,4 @@
-import Usuario from "../models/Usuario.js";
+import { Usuario } from '../models/Usuario.js';
 
 class UsuarioService {
     async getAll() {
@@ -18,7 +18,7 @@ class UsuarioService {
         if (!usuario) {
             throw new Error("Usuario no encontrado");
         }
-        return await Usuario.update(data);
+        return await Usuario.update(data, { where: { id } });
     }
 
     async delete(id) {
@@ -26,7 +26,7 @@ class UsuarioService {
         if (!usuario) {
             throw new Error("Usuario no encontrado");
         }
-        return await Usuario.destroy();
+        return await Usuario.destroy({ where: { id } });
     }
 }
 
