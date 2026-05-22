@@ -1,11 +1,11 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
-export const Rol = sequelize.define("Rol", {
+const Rol = sequelize.define("Rol", {
 
   id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
 

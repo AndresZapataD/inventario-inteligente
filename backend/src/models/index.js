@@ -1,4 +1,4 @@
-import { Rol } from "./Rol.js";
+import  Rol  from "./Rol.js";
 import { Usuario } from "./Usuario.js";
 import { Categoria } from "./Categoria.js";
 import { Producto } from "./Producto.js";

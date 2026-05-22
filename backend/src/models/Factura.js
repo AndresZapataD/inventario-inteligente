@@ -1,3 +1,7 @@
+// ==========================================
+// Entidad encargada de generar y almacenar la información de facturación de cada venta
+// ==========================================
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 

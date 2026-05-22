@@ -1,3 +1,8 @@
+// ==========================================
+//Entidad que almacena los productos específicos asociados a cada venta y sus cantidades
+// ==========================================
+
+
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
