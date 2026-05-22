@@ -5,7 +5,7 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 import { TipoDocumento } from "./TipoDocumento.js";
-import { Rol } from "./Rol.js";
+import  Rol from "./Rol.js";
 
 export const Usuario = sequelize.define("Usuario", {
 

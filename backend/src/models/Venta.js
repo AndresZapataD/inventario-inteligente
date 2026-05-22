@@ -8,8 +8,8 @@ import { sequelize } from "../config/database.js";
 export const Venta = sequelize.define("Venta", {
 
   id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
 

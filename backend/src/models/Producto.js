@@ -1,16 +1,11 @@
-// ==========================================
-// Entidad principal que almacena la información general de los productos del inventario
-// ==========================================
-
-
 import { DataTypes } from "sequelize";
 import { sequelize } from "../config/database.js";
 
 export const Producto = sequelize.define("Producto", {
 
   id: {
-    type: DataTypes.INTEGER,
-    autoIncrement: true,
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
 
@@ -40,13 +35,13 @@ export const Producto = sequelize.define("Producto", {
     defaultValue: 5
   },
 
- categoria_id: {
-  type: DataTypes.INTEGER,
-  allowNull: false,
-  references: {
-    model: "Categoria",
-    key: "id"
+  categoria_id: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: "Categoria",
+      key: "id"
+    }
   }
-}
 
 });
