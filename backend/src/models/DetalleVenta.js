@@ -9,8 +9,8 @@ import { sequelize } from "../config/database.js";
 export const DetalleVenta = sequelize.define("DetalleVenta", {
 
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true
   },
 
@@ -19,11 +19,11 @@ export const DetalleVenta = sequelize.define("DetalleVenta", {
   },
 
   precioUnitario: {
-    type: DataTypes.DECIMAL
+    type: DataTypes.DECIMAL(10, 2)
   },
 
   subtotal: {
-    type: DataTypes.DECIMAL
+    type: DataTypes.DECIMAL(10, 2)
   }
 
 });

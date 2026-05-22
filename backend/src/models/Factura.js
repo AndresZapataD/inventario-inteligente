@@ -8,8 +8,8 @@ import { sequelize } from "../config/database.js";
 export const Factura = sequelize.define("Factura", {
 
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true
   },
 
@@ -18,7 +18,7 @@ export const Factura = sequelize.define("Factura", {
   },
 
   total: {
-    type: DataTypes.DECIMAL
+    type: DataTypes.DECIMAL(10, 2)
   }
 
 });

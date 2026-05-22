@@ -5,6 +5,8 @@ import { Producto } from "./Producto.js";
 import { Venta } from "./Venta.js";
 import { DetalleVenta } from "./DetalleVenta.js";
 import { Factura } from "./Factura.js";
+import { TipoDocumento } from "./TipoDocumento.js";
+import { Cliente } from "./Cliente.js";
 
 
 // ==========================================
@@ -76,6 +78,24 @@ Venta.hasOne(Factura, {
   foreignKey: "venta_id"
 });
 
+//usuario tipo documento
+Usuario.belongsTo(TipoDocumento, {
+  foreignKey: "tipoDocumento_id"
+});
+
+TipoDocumento.hasMany(Usuario, {
+  foreignKey: "tipoDocumento_id"
+});
+
+//cliente tipo documento
+Cliente.belongsTo(TipoDocumento, {
+  foreignKey: "tipoDocumento_id"
+});
+
+TipoDocumento.hasMany(Cliente, {
+  foreignKey: "tipoDocumento_id"
+});
+
 
 // EXPORTAR TODO
 
@@ -86,5 +106,7 @@ export {
   Producto,
   Venta,
   DetalleVenta,
-  Factura
+  Factura,
+  TipoDocumento,
+  Cliente
 };
