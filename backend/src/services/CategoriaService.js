@@ -5,7 +5,7 @@ class CategoriaService {
         return await Categoria.findAll();
     }
 
-    async getById() {
+    async getById(id) {
         return await Categoria.findByPk(id);
     }
 

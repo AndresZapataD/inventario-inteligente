@@ -1,16 +1,22 @@
 import dotenv from "dotenv";
 import express from "express";
+import cors from "cors";
+
 import { sequelize } from "./config/database.js";
 import authRoutes from "./routes/authRoutes.js";
-dotenv.config();
 
-// IMPORTAR MODELOS Y RELACIONES
+
 import "./models/index.js";
+
+dotenv.config();
 
 const app = express();
 
+// Middlewares
+app.use(cors());
 app.use(express.json());
 
+// Rutas
 app.use("/api/roles", (await import("./routes/RolRoutes.js")).default);
 app.use("/api/usuarios", (await import("./routes/UsuarioRoutes.js")).default);
 app.use("/api/categorias", (await import("./routes/CategoriaRoutes.js")).default);
@@ -21,7 +27,9 @@ app.use("/api/auth", authRoutes);
 
 
 async function main() {
+
   try {
+
     await sequelize.authenticate();
 
     console.log("Base de datos conectada");
@@ -34,8 +42,10 @@ async function main() {
       console.log(`Servidor corriendo en puerto ${process.env.PORT}`);
     });
 
-  } catch(error) {
+  } catch (error) {
+
     console.log(error);
+
   }
 }
 

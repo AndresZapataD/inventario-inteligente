@@ -22,7 +22,7 @@ export const Producto = sequelize.define("Producto", {
     defaultValue: 0
   },
 
-  precioCompra: {
+  costo: {
     type: DataTypes.DECIMAL(10, 2)
   },
 
@@ -42,6 +42,16 @@ export const Producto = sequelize.define("Producto", {
     model: "Categoria",
     key: "id"
   }
+},
+codigoBarras: {
+  type: DataTypes.STRING,
+  allowNull: true,
+  unique: true
+},
+
+estado: {
+  type: DataTypes.ENUM("activo", "inactivo"),
+  defaultValue: "activo"
 }
 
 });

@@ -9,7 +9,7 @@ export const theme = createTheme({
       main: "#9c27b0",
     },
     background: {
-      default: "#cd1111",
+      default: "#257e99",
     },
   },
   typography: {
