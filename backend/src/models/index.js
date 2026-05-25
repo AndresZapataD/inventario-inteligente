@@ -77,23 +77,25 @@ Factura.belongsTo(Venta, {
 Venta.hasOne(Factura, {
   foreignKey: "venta_id"
 });
+// Usuario - TipoDocumento
 
-//usuario tipo documento
 Usuario.belongsTo(TipoDocumento, {
-  foreignKey: "tipoDocumento_id"
+  foreignKey: "TipoDocumentoId"
 });
 
 TipoDocumento.hasMany(Usuario, {
-  foreignKey: "tipoDocumento_id"
+  foreignKey: "TipoDocumentoId"
 });
 
-//cliente tipo documento
+
+// Cliente - TipoDocumento
+
 Cliente.belongsTo(TipoDocumento, {
-  foreignKey: "tipoDocumento_id"
+  foreignKey: "TipoDocumentoId"
 });
 
 TipoDocumento.hasMany(Cliente, {
-  foreignKey: "tipoDocumento_id"
+  foreignKey: "TipoDocumentoId"
 });
 
 
