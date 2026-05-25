@@ -6,8 +6,8 @@ import { Rol } from "./Rol.js";
 export const Usuario = sequelize.define("Usuario", {
 
   id: {
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
     primaryKey: true
   },
 
@@ -17,7 +17,7 @@ export const Usuario = sequelize.define("Usuario", {
 
   apellido: {
     type: DataTypes.STRING,
-    nullable: true
+    allowNull: true
   },
 
   tipoDocumento_id: {

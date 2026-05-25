@@ -10,10 +10,8 @@ import { Cliente } from "./Cliente.js";
 
 
 // ==========================================
-// RELACIONES
+// USUARIO - ROL
 // ==========================================
-
-// Usuario - Rol
 
 Usuario.belongsTo(Rol, {
   foreignKey: "rol_id"
@@ -24,7 +22,9 @@ Rol.hasMany(Usuario, {
 });
 
 
-// Producto - Categoria
+// ==========================================
+// PRODUCTO - CATEGORIA
+// ==========================================
 
 Producto.belongsTo(Categoria, {
   foreignKey: "categoria_id"
@@ -35,49 +35,9 @@ Categoria.hasMany(Producto, {
 });
 
 
-// Venta - Usuario
-
-Venta.belongsTo(Usuario, {
-  foreignKey: "usuario_id"
-});
-
-Usuario.hasMany(Venta, {
-  foreignKey: "usuario_id"
-});
-
-
-// DetalleVenta - Venta
-
-DetalleVenta.belongsTo(Venta, {
-  foreignKey: "venta_id"
-});
-
-Venta.hasMany(DetalleVenta, {
-  foreignKey: "venta_id"
-});
-
-
-// DetalleVenta - Producto
-
-DetalleVenta.belongsTo(Producto, {
-  foreignKey: "producto_id"
-});
-
-Producto.hasMany(DetalleVenta, {
-  foreignKey: "producto_id"
-});
-
-
-// Factura - Venta
-
-Factura.belongsTo(Venta, {
-  foreignKey: "venta_id"
-});
-
-Venta.hasOne(Factura, {
-  foreignKey: "venta_id"
-});
-// Usuario - TipoDocumento
+// ==========================================
+// USUARIO - TIPO DOCUMENTO
+// ==========================================
 
 Usuario.belongsTo(TipoDocumento, {
   foreignKey: "TipoDocumentoId"
@@ -88,7 +48,9 @@ TipoDocumento.hasMany(Usuario, {
 });
 
 
-// Cliente - TipoDocumento
+// ==========================================
+// CLIENTE - TIPO DOCUMENTO
+// ==========================================
 
 Cliente.belongsTo(TipoDocumento, {
   foreignKey: "TipoDocumentoId"
@@ -99,7 +61,74 @@ TipoDocumento.hasMany(Cliente, {
 });
 
 
-// EXPORTAR TODO
+// ==========================================
+// VENTA - USUARIO
+// ==========================================
+
+Venta.belongsTo(Usuario, {
+  foreignKey: "usuario_id"
+});
+
+Usuario.hasMany(Venta, {
+  foreignKey: "usuario_id"
+});
+
+
+// ==========================================
+// VENTA - CLIENTE
+// ==========================================
+
+Venta.belongsTo(Cliente, {
+  foreignKey: "cliente_id"
+});
+
+Cliente.hasMany(Venta, {
+  foreignKey: "cliente_id"
+});
+
+
+// ==========================================
+// DETALLE VENTA - VENTA
+// ==========================================
+
+DetalleVenta.belongsTo(Venta, {
+  foreignKey: "venta_id"
+});
+
+Venta.hasMany(DetalleVenta, {
+  foreignKey: "venta_id"
+});
+
+
+// ==========================================
+// DETALLE VENTA - PRODUCTO
+// ==========================================
+
+DetalleVenta.belongsTo(Producto, {
+  foreignKey: "producto_id"
+});
+
+Producto.hasMany(DetalleVenta, {
+  foreignKey: "producto_id"
+});
+
+
+// ==========================================
+// FACTURA - VENTA
+// ==========================================
+
+Factura.belongsTo(Venta, {
+  foreignKey: "venta_id"
+});
+
+Venta.hasOne(Factura, {
+  foreignKey: "venta_id"
+});
+
+
+// ==========================================
+// EXPORTAR
+// ==========================================
 
 export {
   Rol,

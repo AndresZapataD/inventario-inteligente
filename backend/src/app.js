@@ -24,6 +24,8 @@ app.use("/api/productos", (await import("./routes/ProductoRoutes.js")).default);
 app.use("/api/tipos-documento", (await import("./routes/TipoDocumentoRoutes.js")).default);
 app.use("/api/clientes", (await import("./routes/ClienteRoutes.js")).default);
 app.use("/api/auth", authRoutes);
+app.use("/api/ventas", (await import("./routes/VentaRoutes.js")).default);
+app.use("/api/detalles-venta", (await import("./routes/DetalleVentaRoutes.js")).default);
 
 
 async function main() {

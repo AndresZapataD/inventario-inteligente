@@ -1,8 +1,6 @@
 import {DataTypes} from "sequelize";
 import {sequelize} from "../config/database.js";
 import { TipoDocumento } from "./TipoDocumento.js";
-import { DocumentToEntityTransformer } from "typeorm/query-builder/transformer/DocumentToEntityTransformer.js";
-import { appendFile } from "node:fs";
 
 export const Cliente = sequelize.define("Cliente", {
     id: {

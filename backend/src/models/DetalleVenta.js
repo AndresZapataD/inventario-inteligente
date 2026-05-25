@@ -9,16 +9,24 @@ export const DetalleVenta = sequelize.define("DetalleVenta", {
     primaryKey: true
   },
 
+  nombreProducto: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+
   cantidad: {
-    type: DataTypes.INTEGER
+    type: DataTypes.INTEGER,
+    allowNull: false
   },
 
   precioUnitario: {
-    type: DataTypes.DECIMAL(10, 2)
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
   },
 
   subtotal: {
-    type: DataTypes.DECIMAL(10, 2)
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
   }
 
 });
