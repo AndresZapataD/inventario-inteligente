@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 import Navbar from "../../components/Navbar.jsx";
 
@@ -7,12 +7,14 @@ import {
   Typography,
   Button,
   Paper,
-  Stack
+  Stack,
+  Alert
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
+import AddIcon from "@mui/icons-material/Add";
 
-import VentaService from "../../services/VentaService";
+import VentaService from "../../services/ventaService";
 
 import VentaFilters from "../../components/ventas/VentaFilters";
 import VentaTable from "../../components/ventas/VentaTable";
@@ -22,6 +24,7 @@ export default function VentaList() {
   const navigate = useNavigate();
 
   const [ventas, setVentas] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const [filters, setFilters] = useState({
     search: "",
@@ -33,15 +36,16 @@ export default function VentaList() {
   const loadVentas = async () => {
 
     try {
-
+      setLoading(true);
       const response = await VentaService.getAll();
-
-      setVentas(response.data);
+      setVentas(response);
 
     } catch (error) {
 
       console.error(error);
 
+    } finally {
+      setLoading(false);
     }
 
   };
@@ -52,37 +56,101 @@ export default function VentaList() {
 
   }, []);
 
+  // Aplicar filtros a las ventas
+  const ventasFiltradas = useMemo(() => {
+    return ventas.filter((venta) => {
+      // Filtro de búsqueda
+      if (filters.search) {
+        const search = filters.search.toLowerCase();
+        const clienteName = venta.Cliente?.nombre?.toLowerCase() || "";
+        const ventaId = venta.id?.toString() || "";
+        if (!clienteName.includes(search) && !ventaId.includes(search)) {
+          return false;
+        }
+      }
+
+      // Filtro de estado
+      if (filters.estado) {
+        if (venta.estado !== filters.estado) {
+          return false;
+        }
+      }
+
+      // Filtro de fecha inicio
+      if (filters.fechaInicio) {
+        const fechaVenta = new Date(venta.createdAt).toISOString().split("T")[0];
+        if (fechaVenta < filters.fechaInicio) {
+          return false;
+        }
+      }
+
+      // Filtro de fecha fin
+      if (filters.fechaFin) {
+        const fechaVenta = new Date(venta.createdAt).toISOString().split("T")[0];
+        if (fechaVenta > filters.fechaFin) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+  }, [ventas, filters]);
+
   return (
 
     <>
     
       <Navbar />
 
-      <Box p={3}>
-
-        <Stack
-          direction="row"
-          sx={{
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 3
-          }}
-        >
-
-          <Typography variant="h4">
-            Ventas
-          </Typography>
-
-          <Button
-            variant="contained"
-            onClick={() => navigate("/ventas/nueva")}
+      <Box sx={{ 
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+        py: 4,
+        mb: 3
+      }}>
+        <Box sx={{ maxWidth: 1200, mx: "auto", px: 3 }}>
+          <Stack
+            direction="row"
+            sx={{
+              justifyContent: "space-between",
+              alignItems: "center"
+            }}
           >
-            Nueva Venta
-          </Button>
+            <Typography variant="h4" sx={{ color: "white", fontWeight: "bold" }}>
+              📊 Gestión de Ventas
+            </Typography>
 
-        </Stack>
+            <Button
+              variant="contained"
+              onClick={() => navigate("/ventas/nueva")}
+              startIcon={<AddIcon />}
+              sx={{
+                backgroundColor: "#fff",
+                color: "#667eea",
+                fontWeight: "bold",
+                "&:hover": {
+                  backgroundColor: "#f0f0f0"
+                }
+              }}
+            >
+              Nueva Venta
+            </Button>
 
-        <Paper sx={{ p: 2, mb: 3 }}>
+          </Stack>
+        </Box>
+      </Box>
+
+      <Box sx={{ maxWidth: 1200, mx: "auto", px: 3, pb: 4 }}>
+
+        <Paper sx={{ 
+          p: 3, 
+          mb: 3,
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+          borderRadius: 2
+        }}>
+
+          <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", color: "#333" }}>
+            🔍 Filtros de búsqueda
+          </Typography>
 
           <VentaFilters
             filters={filters}
@@ -91,11 +159,27 @@ export default function VentaList() {
 
         </Paper>
 
-        <Paper sx={{ p: 2 }}>
+        {ventas.length === 0 && !loading ? (
+          <Alert severity="info">
+            No hay ventas registradas. ¡Crea la primera venta!
+          </Alert>
+        ) : (
+          <Paper sx={{ 
+            p: 3,
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+            borderRadius: 2
+          }}>
+            
+            <Box sx={{ mb: 2, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <Typography variant="h6" sx={{ fontWeight: "bold", color: "#333" }}>
+                Total de ventas: <span style={{ color: "#667eea" }}>{ventasFiltradas.length}</span> de {ventas.length}
+              </Typography>
+            </Box>
 
-          <VentaTable ventas={ventas} />
+            <VentaTable ventas={ventasFiltradas} onVentasUpdate={loadVentas} />
 
-        </Paper>
+          </Paper>
+        )}
 
       </Box>
 
