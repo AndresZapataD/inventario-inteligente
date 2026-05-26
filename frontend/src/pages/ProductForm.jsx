@@ -268,12 +268,14 @@ export default function ProductoForm() {
   return (
 
     <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
-      minHeight="100vh"
-      p={3}
-    >
+  sx={{
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "100vh",
+    p: 3
+  }}
+>
 
       <Paper
         elevation={4}
@@ -285,12 +287,14 @@ export default function ProductoForm() {
         }}
       >
 
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-          mb={4}
-          textAlign="center"
-        >
+      <Typography
+        variant="h4"
+      sx={{
+      fontWeight: "bold",
+      mb: 4,
+      textAlign: "center"
+  }}
+>
 
           {
             id
@@ -430,10 +434,10 @@ export default function ProductoForm() {
             {/* BOTONES */}
 
             <Stack
-              direction="row"
-              spacing={2}
-              justifyContent="flex-end"
-            >
+  direction="row"
+  spacing={2}
+  sx={{ justifyContent: "flex-end" }}
+>
 
               <Button
                 variant="outlined"

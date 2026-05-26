@@ -31,6 +31,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const links = [
+    {name: "Ventas", icon: <LayoutDashboard size={20} />, path: "/ventas"},
     { name: "Dashboard", icon: <LayoutDashboard size={20} />, path: "/dashboard" },
     { name: "Clientes", icon: <Users size={20} />, path: "/clientes" },
     { name: "Inventario", icon: <Package size={20} />, path: "/inventario" },
