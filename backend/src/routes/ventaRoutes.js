@@ -32,6 +32,15 @@ router.post("/", (req, res) =>
 
 
 // ==========================
+// ACTUALIZAR VENTA
+// ==========================
+
+router.put("/:id", (req, res) =>
+  VentaController.update(req, res)
+);
+
+
+// ==========================
 // ELIMINAR VENTA
 // ==========================
 

@@ -64,10 +64,6 @@ export default function AppRoutes() {
           element={<ClienteForm />}
         />
 
-        {/* ========================= */}
-        {/* RUTAS VENTAS */}
-        {/* ========================= */}
-
         <Route
           path="/ventas"
           element={<VentaList />}
@@ -75,6 +71,11 @@ export default function AppRoutes() {
 
         <Route
           path="/ventas/nueva"
+          element={<VentaForm />}
+        />
+
+        <Route
+          path="/ventas/editar/:id"
           element={<VentaForm />}
         />
 
