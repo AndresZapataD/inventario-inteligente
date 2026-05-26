@@ -74,16 +74,16 @@ export default function VentaFilters({ filters, setFilters }) {
               Todos
             </MenuItem>
 
-            <MenuItem value="Completada">
-              Completada
+            <MenuItem value="PAGADA">
+              Pagada
             </MenuItem>
 
-            <MenuItem value="Pendiente">
+            <MenuItem value="PENDIENTE">
               Pendiente
             </MenuItem>
 
-            <MenuItem value="Cancelada">
-              Cancelada
+            <MenuItem value="ANULADA">
+              Anulada
             </MenuItem>
 
           </TextField>
@@ -144,15 +144,6 @@ export default function VentaFilters({ filters, setFilters }) {
         </Box>
       )}
     </Box>
-
-  );
-
-}
-        />
-
-      </Grid>
-
-    </Grid>
 
   );
 

@@ -60,11 +60,11 @@ export default function VentaTable({ ventas = [], onVentasUpdate = null }) {
 
   const getEstadoColor = (estado) => {
     switch (estado) {
-      case "Completada":
+      case "PAGADA":
         return { color: "success", icon: "✓" };
-      case "Pendiente":
+      case "PENDIENTE":
         return { color: "warning", icon: "⏱" };
-      case "Cancelada":
+      case "ANULADA":
         return { color: "error", icon: "✕" };
       default:
         return { color: "default", icon: "−" };
@@ -147,7 +147,7 @@ export default function VentaTable({ ventas = [], onVentasUpdate = null }) {
 
                   <TableCell>
                     <Chip 
-                      label={venta.estado}
+                      label={venta.estado === "PAGADA" ? "Pagada" : venta.estado === "PENDIENTE" ? "Pendiente" : "Anulada"}
                       color={getEstadoColor(venta.estado).color}
                       variant="filled"
                       size="small"
@@ -289,7 +289,7 @@ export default function VentaTable({ ventas = [], onVentasUpdate = null }) {
                   Estado
                 </Typography>
                 <Chip 
-                  label={selectedVenta.estado}
+                  label={selectedVenta.estado === "PAGADA" ? "Pagada" : selectedVenta.estado === "PENDIENTE" ? "Pendiente" : "Anulada"}
                   color={getEstadoColor(selectedVenta.estado).color}
                   sx={{ fontWeight: "bold" }}
                 />

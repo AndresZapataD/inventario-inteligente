@@ -58,36 +58,43 @@ export default function VentaList() {
 
   // Aplicar filtros a las ventas
   const ventasFiltradas = useMemo(() => {
+    console.log("Filtrando ventas:", { filtros: filters, ventasTotal: ventas.length });
+    
     return ventas.filter((venta) => {
-      // Filtro de búsqueda
-      if (filters.search) {
-        const search = filters.search.toLowerCase();
-        const clienteName = venta.Cliente?.nombre?.toLowerCase() || "";
-        const ventaId = venta.id?.toString() || "";
-        if (!clienteName.includes(search) && !ventaId.includes(search)) {
+      // Filtro de búsqueda - busca en cliente o ID
+      if (filters.search && filters.search.trim() !== "") {
+        const search = filters.search.toLowerCase().trim();
+        const clienteName = (venta.Cliente?.nombre || "").toLowerCase();
+        const ventaId = (venta.id || "").toString();
+        const coincide = clienteName.includes(search) || ventaId.includes(search);
+        if (!coincide) {
+          console.log(`Descartada venta ${venta.id} por búsqueda: "${search}" no coincide con cliente "${venta.Cliente?.nombre}"`);
           return false;
         }
       }
 
       // Filtro de estado
-      if (filters.estado) {
+      if (filters.estado && filters.estado.trim() !== "") {
         if (venta.estado !== filters.estado) {
+          console.log(`Descartada venta ${venta.id} por estado: "${venta.estado}" !== "${filters.estado}"`);
           return false;
         }
       }
 
       // Filtro de fecha inicio
-      if (filters.fechaInicio) {
+      if (filters.fechaInicio && filters.fechaInicio.trim() !== "") {
         const fechaVenta = new Date(venta.createdAt).toISOString().split("T")[0];
         if (fechaVenta < filters.fechaInicio) {
+          console.log(`Descartada venta ${venta.id} por fecha inicio: "${fechaVenta}" < "${filters.fechaInicio}"`);
           return false;
         }
       }
 
       // Filtro de fecha fin
-      if (filters.fechaFin) {
+      if (filters.fechaFin && filters.fechaFin.trim() !== "") {
         const fechaVenta = new Date(venta.createdAt).toISOString().split("T")[0];
         if (fechaVenta > filters.fechaFin) {
+          console.log(`Descartada venta ${venta.id} por fecha fin: "${fechaVenta}" > "${filters.fechaFin}"`);
           return false;
         }
       }
