@@ -58,8 +58,6 @@ export default function VentaList() {
 
   // Aplicar filtros a las ventas
   const ventasFiltradas = useMemo(() => {
-    console.log("Filtrando ventas:", { filtros: filters, ventasTotal: ventas.length });
-    
     return ventas.filter((venta) => {
       // Filtro de búsqueda - busca en cliente o ID
       if (filters.search && filters.search.trim() !== "") {
@@ -68,7 +66,6 @@ export default function VentaList() {
         const ventaId = (venta.id || "").toString();
         const coincide = clienteName.includes(search) || ventaId.includes(search);
         if (!coincide) {
-          console.log(`Descartada venta ${venta.id} por búsqueda: "${search}" no coincide con cliente "${venta.Cliente?.nombre}"`);
           return false;
         }
       }
@@ -76,7 +73,6 @@ export default function VentaList() {
       // Filtro de estado
       if (filters.estado && filters.estado.trim() !== "") {
         if (venta.estado !== filters.estado) {
-          console.log(`Descartada venta ${venta.id} por estado: "${venta.estado}" !== "${filters.estado}"`);
           return false;
         }
       }
@@ -85,7 +81,6 @@ export default function VentaList() {
       if (filters.fechaInicio && filters.fechaInicio.trim() !== "") {
         const fechaVenta = new Date(venta.createdAt).toISOString().split("T")[0];
         if (fechaVenta < filters.fechaInicio) {
-          console.log(`Descartada venta ${venta.id} por fecha inicio: "${fechaVenta}" < "${filters.fechaInicio}"`);
           return false;
         }
       }
@@ -94,7 +89,6 @@ export default function VentaList() {
       if (filters.fechaFin && filters.fechaFin.trim() !== "") {
         const fechaVenta = new Date(venta.createdAt).toISOString().split("T")[0];
         if (fechaVenta > filters.fechaFin) {
-          console.log(`Descartada venta ${venta.id} por fecha fin: "${fechaVenta}" > "${filters.fechaFin}"`);
           return false;
         }
       }

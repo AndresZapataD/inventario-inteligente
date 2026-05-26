@@ -236,6 +236,7 @@ export default function VentaForm() {
     }
   };
 
+  const subtotal = calcularSubtotal();
   const total = calcularTotal();
 
   return (
@@ -337,7 +338,9 @@ export default function VentaForm() {
                     name="impuesto"
                     value={form.impuesto}
                     onChange={handleChange}
-                    inputProps={{ min: 0, step: 0.01 }}
+                    slotProps={{
+                      htmlInput: { min: 0, step: 0.01 }
+                    }}
                   />
                 </Grid>
 
@@ -349,7 +352,9 @@ export default function VentaForm() {
                     name="descuento"
                     value={form.descuento}
                     onChange={handleChange}
-                    inputProps={{ min: 0, step: 0.01 }}
+                    slotProps={{
+                      htmlInput: { min: 0, step: 0.01 }
+                    }}
                   />
                 </Grid>
 
@@ -493,18 +498,23 @@ export default function VentaForm() {
             select
             fullWidth
             label="Seleccionar Producto"
-            value={productoSeleccionado?.id || ""}
+            value={productoSeleccionado?.id ? String(productoSeleccionado.id) : ""}
             onChange={(e) => {
-              const producto = productosDisponibles.find(p => p.id == e.target.value);
+              const producto = productosDisponibles.find(p => String(p.id) === String(e.target.value));
               setProductoSeleccionado(producto);
             }}
             sx={{ mb: 2 }}
+            disabled={productosDisponibles.length === 0}
           >
-            {productosDisponibles.map((producto) => (
-              <MenuItem key={producto.id} value={producto.id}>
-                {producto.nombre} - ${parseFloat(producto.precioVenta).toFixed(2)}
-              </MenuItem>
-            ))}
+            {productosDisponibles.length === 0 ? (
+              <MenuItem disabled>No hay productos disponibles</MenuItem>
+            ) : (
+              productosDisponibles.map((producto) => (
+                <MenuItem key={producto.id} value={String(producto.id)}>
+                  {producto.nombre} - ${parseFloat(producto.precioVenta).toFixed(2)}
+                </MenuItem>
+              ))
+            )}
           </TextField>
 
           <TextField
@@ -512,8 +522,10 @@ export default function VentaForm() {
             type="number"
             label="Cantidad"
             value={cantidadProducto}
-            onChange={(e) => setCantidadProducto(e.target.value)}
-            inputProps={{ min: 1 }}
+            onChange={(e) => setCantidadProducto(Number(e.target.value) || 1)}
+            slotProps={{
+              htmlInput: { min: 1 }
+            }}
           />
 
           {productoSeleccionado && (

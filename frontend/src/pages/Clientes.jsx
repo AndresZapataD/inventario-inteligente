@@ -15,19 +15,41 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
+  TableRow,
+  TextField,
+  InputAdornment
 } from "@mui/material";
+
+import SearchIcon from "@mui/icons-material/Search";
 
 export default function Clientes() {
 
   const navigate = useNavigate();
 
   const [clientes, setClientes] = useState([]);
+  const [clientesFiltrados, setClientesFiltrados] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filtro, setFiltro] = useState("");
 
   useEffect(() => {
     cargarClientes();
   }, []);
+
+  // Filtrar clientes cada vez que cambia el filtro
+  useEffect(() => {
+    if (!filtro.trim()) {
+      setClientesFiltrados(clientes);
+    } else {
+      const filtroLower = filtro.toLowerCase();
+      const filtrados = clientes.filter(cliente =>
+        (cliente.documento && cliente.documento.toLowerCase().includes(filtroLower)) ||
+        (cliente.nombre && cliente.nombre.toLowerCase().includes(filtroLower)) ||
+        (cliente.apellido && cliente.apellido.toLowerCase().includes(filtroLower)) ||
+        (cliente.empresa && cliente.empresa.toLowerCase().includes(filtroLower))
+      );
+      setClientesFiltrados(filtrados);
+    }
+  }, [filtro, clientes]);
 
   const cargarClientes = async () => {
     try {
@@ -142,6 +164,43 @@ export default function Clientes() {
 
         </Box>
 
+        {/* Filtro de búsqueda */}
+        <Box sx={{ mb: 4 }}>
+          <TextField
+            fullWidth
+            placeholder="🔍 Buscar por documento, nombre o empresa..."
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: "#6b7280", mr: 1 }} />
+                </InputAdornment>
+              )
+            }}
+            sx={{
+              "& .MuiOutlinedInput-root": {
+                borderRadius: 2,
+                backgroundColor: "#ffffff",
+                "&:hover fieldset": {
+                  borderColor: "#667eea"
+                },
+                "&.Mui-focused fieldset": {
+                  borderColor: "#667eea"
+                }
+              }
+            }}
+          />
+          {filtro && (
+            <Typography
+              variant="caption"
+              sx={{ color: "#6b7280", mt: 1, display: "block" }}
+            >
+              Se encontraron {clientesFiltrados.length} cliente(s)
+            </Typography>
+          )}
+        </Box>
+
         {loading ? (
 
           <Box
@@ -220,7 +279,16 @@ export default function Clientes() {
 
                 <TableBody>
 
-                  {clientes.map((cliente) => (
+                  {clientesFiltrados.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={8} sx={{ textAlign: "center", py: 3 }}>
+                        <Typography color="textSecondary">
+                          {filtro ? "No se encontraron clientes" : "No hay clientes registrados"}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ) : (
+                    clientesFiltrados.map((cliente) => (
 
                     <TableRow
                       key={cliente.id}
@@ -295,8 +363,8 @@ export default function Clientes() {
                       </TableCell>
 
                     </TableRow>
-
-                  ))}
+                    ))
+                  )}
 
                 </TableBody>
 
