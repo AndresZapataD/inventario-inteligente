@@ -81,37 +81,104 @@ export default function VentaForm() {
   };
 
   // Cargar venta existente si es edición
-  const loadVenta = async () => {
-    if (!esEdicion) return;
-    try {
-      setLoading(true);
-      const venta = await VentaService.getById(id);
-      
-      setForm({
-        cliente_id: venta.cliente_id || "",
-        metodoPago: venta.metodoPago || "EFECTIVO",
-        estado: venta.estado || "PENDIENTE",
-        observacion: venta.observacion || ""
-      });
+const loadVenta = async () => {
 
-      if (venta.DetalleVentas && Array.isArray(venta.DetalleVentas)) {
-        setProductosSelecionados(
-          venta.DetalleVentas.map(detalle => ({
-            id: detalle.producto_id,
-            nombre: detalle.nombreProducto,
-            precioVenta: detalle.precioUnitario,
-            cantidad: detalle.cantidad,
-            subtotal: detalle.subtotal
-          }))
-        );
-      }
-    } catch (error) {
-      console.error("ERROR CARGANDO VENTA:", error);
-      alert("Error al cargar la venta");
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (!esEdicion) return;
+
+  try {
+
+    setLoading(true);
+
+    const response = await VentaService.getById(id);
+
+    console.log("VENTA RESPONSE:", response);
+
+    // Algunas APIs devuelven { venta: {...} }
+    // otras devuelven directamente la venta
+    const venta = response.venta || response;
+
+    // =====================================
+    // CARGAR FORMULARIO
+    // =====================================
+
+    setForm({
+
+      cliente_id: venta.cliente_id || "",
+
+      metodoPago:
+        venta.metodoPago || "EFECTIVO",
+
+      estado:
+        venta.estado || "PENDIENTE",
+
+      impuesto:
+        Number(venta.impuesto) || 0,
+
+      descuento:
+        Number(venta.descuento) || 0,
+
+      observacion:
+        venta.observacion || ""
+
+    });
+
+    // =====================================
+    // OBTENER DETALLES
+    // =====================================
+
+    const detalles =
+      venta.DetalleVentas ||
+      venta.detalleVentas ||
+      venta.detalles ||
+      venta.DetalleVenta ||
+      [];
+
+    console.log("DETALLES:", detalles);
+
+    // =====================================
+    // CARGAR PRODUCTOS
+    // =====================================
+
+    setProductosSelecionados(
+
+      detalles.map(detalle => ({
+
+        id:
+          detalle.producto_id,
+
+        nombre:
+          detalle.nombreProducto ||
+          detalle.Producto?.nombre ||
+          "Producto",
+
+        precioVenta:
+          Number(detalle.precioUnitario) ||
+          Number(detalle.Producto?.precioVenta) ||
+          0,
+
+        cantidad:
+          Number(detalle.cantidad) || 1,
+
+        subtotal:
+          Number(detalle.subtotal) || 0
+
+      }))
+
+    );
+
+  } catch (error) {
+
+    console.error("ERROR CARGANDO VENTA:", error);
+
+    alert("Error al cargar la venta");
+
+  } finally {
+
+    setLoading(false);
+
+  }
+
+};
 
   useEffect(() => {
     loadClientes();
@@ -190,6 +257,29 @@ export default function VentaForm() {
   const quitarProducto = (productoId) => {
     setProductosSelecionados(productosSelecionados.filter(p => p.id !== productoId));
   };
+  const actualizarProducto = (productoId, campo, valor) => {
+
+  setProductosSelecionados(prev =>
+    prev.map(producto => {
+
+      if (producto.id !== productoId) {
+        return producto;
+      }
+
+      const actualizado = {
+        ...producto,
+        [campo]: valor
+      };
+
+      actualizado.subtotal =
+        actualizado.cantidad * actualizado.precioVenta;
+
+      return actualizado;
+
+    })
+  );
+
+};
 
   const calcularTotal = () => {
     const subtotal = productosSelecionados.reduce((acc, p) => acc + p.subtotal, 0);
@@ -222,10 +312,11 @@ export default function VentaForm() {
         descuento: parseFloat(form.descuento || 0),
         observacion: form.observacion,
         productos: productosSelecionados.map(p => ({
-          producto_id: p.id,
-          cantidad: p.cantidad,
-          subtotal: p.subtotal
-        }))
+        producto_id: p.id,
+        cantidad: p.cantidad,
+        precioUnitario: p.precioVenta,
+        subtotal: p.subtotal
+      }))
       };
 
       if (esEdicion) {
@@ -418,8 +509,42 @@ export default function VentaForm() {
                       {productosSelecionados.map((producto, index) => (
                         <TableRow key={index} hover>
                           <TableCell sx={{ fontWeight: 500 }}>{producto.nombre}</TableCell>
-                          <TableCell align="center">${parseFloat(producto.precioVenta).toFixed(2)}</TableCell>
-                          <TableCell align="center">{producto.cantidad}</TableCell>
+                          <TableCell align="center">
+                          <TextField
+                            type="number"
+                            size="small"
+                            value={producto.precioVenta}
+                            onChange={(e) =>
+                              actualizarProducto(
+                                producto.id,
+                                "precioVenta",
+                                Number(e.target.value)
+                              )
+                            }
+                            slotProps={{
+                              htmlInput: { min: 0, step: 0.01 }
+                            }}
+                            sx={{ width: 100 }}
+                          />
+                        </TableCell>
+                          <TableCell align="center">
+                          <TextField
+                            type="number"
+                            size="small"
+                            value={producto.cantidad}
+                            onChange={(e) =>
+                              actualizarProducto(
+                                producto.id,
+                                "cantidad",
+                                Number(e.target.value)
+                              )
+                            }
+                            slotProps={{
+                              htmlInput: { min: 1 }
+                            }}
+                            sx={{ width: 80 }}
+                          />
+                        </TableCell>
                           <TableCell align="right" sx={{ fontWeight: "bold", color: "#28a745" }}>
                             ${parseFloat(producto.subtotal).toFixed(2)}
                           </TableCell>
