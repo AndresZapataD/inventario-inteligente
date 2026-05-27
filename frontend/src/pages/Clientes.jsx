@@ -71,10 +71,12 @@ export default function Clientes() {
     }
   };
 
-  const eliminarCliente = async (id) => {
+const eliminarCliente = async (id) => {
 
   const confirmar = window.confirm(
-    "¿Estás seguro de eliminar este cliente?"
+    "¿Estás seguro de eliminar este cliente?\n\n" +
+    "Este cliente está asociado a ventas.\n" +
+    "Si lo eliminas, esas ventas quedarán como ventas anónimas y se perderá la relación con el cliente."
   );
 
   if (!confirmar) {
@@ -83,15 +85,19 @@ export default function Clientes() {
 
   try {
 
-    await ClienteService.remove(id);
+    await ClienteService.delete(id);
 
     setClientes(
       clientes.filter(cliente => cliente.id !== id)
     );
 
+    alert("Cliente eliminado correctamente. Las ventas asociadas quedaron como anónimas.");
+
   } catch (error) {
 
     console.error("Error al eliminar cliente:", error);
+
+    alert("No se pudo eliminar el cliente.");
 
   }
 };

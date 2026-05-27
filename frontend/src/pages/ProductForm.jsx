@@ -45,6 +45,8 @@ export default function ProductoForm() {
     estado: "activo"
   });
 
+  const [originalData, setOriginalData] = useState(null);
+
   // =========================
   // USE EFFECT
   // =========================
@@ -95,7 +97,7 @@ export default function ProductoForm() {
       const producto =
         await ProductoService.getById(id);
 
-      setFormData({
+      const datosProducto = {
 
         nombre: producto.nombre || "",
 
@@ -120,7 +122,10 @@ export default function ProductoForm() {
 
         estado:
           producto.estado || "activo"
-      });
+      };
+
+      setFormData(datosProducto);
+      setOriginalData(datosProducto);
 
     } catch (error) {
 
@@ -191,25 +196,55 @@ export default function ProductoForm() {
         return;
       }
 
-      const data = {
+      // Preparar datos a enviar
+      let data;
 
-        ...formData,
+      // Si es edición, solo enviar campos que cambiaron
+      if (id && originalData) {
+        data = {};
+        
+        // Comparar cada campo y solo incluir los que cambiaron
+        Object.keys(formData).forEach(key => {
+          if (formData[key] !== originalData[key]) {
+            data[key] = formData[key];
+          }
+        });
 
-        stock:
-          Number(formData.stock),
+        // Convertir números
+        if (data.stock !== undefined) data.stock = Number(data.stock);
+        if (data.costo !== undefined) data.costo = Number(data.costo);
+        if (data.precioVenta !== undefined) data.precioVenta = Number(data.precioVenta);
+        if (data.stockMinimo !== undefined) data.stockMinimo = Number(data.stockMinimo);
+        if (data.categoria_id !== undefined) data.categoria_id = Number(data.categoria_id);
 
-        costo:
-          Number(formData.costo),
+        // Si no hay cambios, mostrar mensaje
+        if (Object.keys(data).length === 0) {
+          alert("No hay cambios para guardar");
+          setLoading(false);
+          return;
+        }
+      } else {
+        // Si es creación, enviar todo
+        data = {
 
-        precioVenta:
-          Number(formData.precioVenta),
+          ...formData,
 
-        stockMinimo:
-          Number(formData.stockMinimo),
+          stock:
+            Number(formData.stock),
 
-        categoria_id:
-          Number(formData.categoria_id)
-      };
+          costo:
+            Number(formData.costo),
+
+          precioVenta:
+            Number(formData.precioVenta),
+
+          stockMinimo:
+            Number(formData.stockMinimo),
+
+          categoria_id:
+            Number(formData.categoria_id)
+        };
+      }
 
       // EDITAR
 

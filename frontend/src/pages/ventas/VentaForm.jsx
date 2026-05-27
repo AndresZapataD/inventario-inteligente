@@ -21,7 +21,8 @@ import {
   DialogContent,
   DialogActions,
   Alert,
-  Stack
+  Stack,
+  Autocomplete
 } from "@mui/material";
 
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -122,6 +123,13 @@ export default function VentaForm() {
     setForm({
       ...form,
       [e.target.name]: e.target.value
+    });
+  };
+
+  const handleClienteChange = (event, value) => {
+    setForm({
+      ...form,
+      cliente_id: value ? value.id : ""
     });
   };
 
@@ -269,20 +277,22 @@ export default function VentaForm() {
 
               <Grid container spacing={2}>
                 <Grid item xs={12} md={6}>
-                  <TextField
-                    select
+                  <Autocomplete
                     fullWidth
-                    label="Cliente"
-                    name="cliente_id"
-                    value={form.cliente_id}
-                    onChange={handleChange}
-                  >
-                    {clientes.map((cliente) => (
-                      <MenuItem key={cliente.id} value={cliente.id}>
-                        {cliente.nombre}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                    options={clientes}
+                    getOptionLabel={(option) => option.nombre || ""}
+                    value={clientes.find(c => c.id === form.cliente_id) || null}
+                    onChange={handleClienteChange}
+                    renderInput={(params) => (
+                      <TextField {...params} label="Cliente" placeholder="Escribe para buscar..." />
+                    )}
+                    noOptionsText="No se encontraron clientes"
+                    filterOptions={(options, state) => {
+                      return options.filter(option =>
+                        option.nombre.toLowerCase().includes(state.inputValue.toLowerCase())
+                      );
+                    }}
+                  />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
