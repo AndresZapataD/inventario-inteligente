@@ -288,58 +288,85 @@ class VentaController {
   // ACTUALIZAR VENTA
   // ==========================================
 
-  async update(req, res) {
+  // ==========================================
+// ACTUALIZAR VENTA
+// ==========================================
 
-    const transaction = await sequelize.transaction();
+async update(req, res) {
 
-    try {
+  const transaction = await sequelize.transaction();
 
-      const { id } = req.params;
+  try {
 
-      const {
-        cliente_id,
-        metodoPago,
-        estado,
-        observacion,
-        impuesto = 0,
-        descuento = 0,
-        productos
-      } = req.body;
+    const { id } = req.params;
 
-      const venta = await Venta.findByPk(id);
+    const {
+      cliente_id,
+      metodoPago,
+      estado,
+      observacion,
+      impuesto = 0,
+      descuento = 0,
+      productos
+    } = req.body;
 
-      if (!venta) {
+    const venta = await Venta.findByPk(id);
 
-        await transaction.rollback();
+    if (!venta) {
 
-        return res.status(404).json({
-          error: "Venta no encontrada"
-        });
+      await transaction.rollback();
 
-      }
-
-      if (!productos || productos.length === 0) {
-
-        await transaction.rollback();
-
-        return res.status(400).json({
-          error: "La venta debe tener productos"
-        });
-
-      }
-
-      // =====================================
-      // RESTAURAR STOCK ANTERIOR
-      // =====================================
-
-      const detallesActuales = await DetalleVenta.findAll({
-        where: { venta_id: id },
-        transaction
+      return res.status(404).json({
+        error: "Venta no encontrada"
       });
+
+    }
+
+    const estadoAnterior = venta.estado;
+    const nuevoEstado = estado;
+
+    const detallesActuales = await DetalleVenta.findAll({
+      where: { venta_id: id },
+      transaction
+    });
+
+    // ==========================================
+    // VALIDAR PRODUCTOS
+    // ==========================================
+
+    if (!productos || productos.length === 0) {
+
+      await transaction.rollback();
+
+      return res.status(400).json({
+        error: "La venta debe tener productos"
+      });
+
+    }
+
+    // ==========================================
+    // MANEJO INVENTARIO
+    // ==========================================
+
+    const ventaAnteriorActiva =
+      estadoAnterior === "PENDIENTE" ||
+      estadoAnterior === "PAGADA";
+
+    const nuevaVentaActiva =
+      nuevoEstado === "PENDIENTE" ||
+      nuevoEstado === "PAGADA";
+
+    // ==========================================
+    // DEVOLVER STOCK SI ANTES ESTABA ACTIVA
+    // ==========================================
+
+    if (ventaAnteriorActiva) {
 
       for (const detalle of detallesActuales) {
 
-        const producto = await Producto.findByPk(detalle.producto_id);
+        const producto = await Producto.findByPk(
+          detalle.producto_id
+        );
 
         if (producto) {
 
@@ -351,24 +378,21 @@ class VentaController {
 
       }
 
-      // =====================================
-      // ELIMINAR DETALLES ANTERIORES
-      // =====================================
+    }
 
-      await DetalleVenta.destroy({
-        where: { venta_id: id },
-        transaction
-      });
+    // ==========================================
+    // VALIDAR NUEVO STOCK
+    // ==========================================
 
-      // =====================================
-      // VALIDAR NUEVO STOCK
-      // =====================================
+    let subtotalGeneral = 0;
 
-      let subtotalGeneral = 0;
+    if (nuevaVentaActiva) {
 
       for (const item of productos) {
 
-        const producto = await Producto.findByPk(item.producto_id);
+        const producto = await Producto.findByPk(
+          item.producto_id
+        );
 
         if (!producto) {
 
@@ -390,78 +414,103 @@ class VentaController {
 
         }
 
-        const subtotal =
+        subtotalGeneral +=
           Number(item.precioUnitario) *
           Number(item.cantidad);
-
-        subtotalGeneral += subtotal;
 
       }
 
-      // =====================================
-      // CALCULAR TOTALES
-      // =====================================
-
-      const impuestoMonto =
-        subtotalGeneral * (Number(impuesto) / 100);
-
-      const descuentoMonto =
-        subtotalGeneral * (Number(descuento) / 100);
-
-      const totalFinal =
-        subtotalGeneral +
-        impuestoMonto -
-        descuentoMonto;
-
-      // =====================================
-      // ACTUALIZAR VENTA
-      // =====================================
-
-      await venta.update({
-
-        cliente_id,
-        metodoPago,
-        estado,
-        observacion: observacion || "",
-
-        subtotal: subtotalGeneral,
-        impuesto,
-        descuento,
-        total: totalFinal
-
-      }, { transaction });
-
-      // =====================================
-      // CREAR NUEVOS DETALLES
-      // =====================================
+    } else {
 
       for (const item of productos) {
 
-        const producto = await Producto.findByPk(item.producto_id);
-
-        const subtotal =
+        subtotalGeneral +=
           Number(item.precioUnitario) *
           Number(item.cantidad);
 
-        await DetalleVenta.create({
+      }
 
-          venta_id: venta.id,
+    }
 
-          producto_id: producto.id,
+    // ==========================================
+    // CALCULAR TOTALES
+    // ==========================================
 
-          nombreProducto: producto.nombre,
+    const impuestoMonto =
+      subtotalGeneral * (Number(impuesto) / 100);
 
-          cantidad: item.cantidad,
+    const descuentoMonto =
+      subtotalGeneral * (Number(descuento) / 100);
 
-          precioUnitario: item.precioUnitario,
+    const totalFinal =
+      subtotalGeneral +
+      impuestoMonto -
+      descuentoMonto;
 
-          subtotal
+    // ==========================================
+    // ACTUALIZAR VENTA
+    // ==========================================
 
-        }, { transaction });
+    await venta.update({
 
-        // =====================================
-        // DESCONTAR STOCK
-        // =====================================
+      cliente_id,
+      metodoPago,
+      estado: nuevoEstado,
+
+      observacion: observacion || "",
+
+      subtotal: subtotalGeneral,
+      impuesto,
+      descuento,
+      total: totalFinal
+
+    }, { transaction });
+
+    // ==========================================
+    // ELIMINAR DETALLES VIEJOS
+    // ==========================================
+
+    await DetalleVenta.destroy({
+      where: { venta_id: id },
+      transaction
+    });
+
+    // ==========================================
+    // CREAR NUEVOS DETALLES
+    // ==========================================
+
+    for (const item of productos) {
+
+      const producto = await Producto.findByPk(
+        item.producto_id
+      );
+
+      const subtotal =
+        Number(item.precioUnitario) *
+        Number(item.cantidad);
+
+      await DetalleVenta.create({
+
+        venta_id: venta.id,
+
+        producto_id: producto.id,
+
+        nombreProducto: producto.nombre,
+
+        cantidad: item.cantidad,
+
+        precioUnitario: item.precioUnitario,
+
+        subtotal
+
+      }, { transaction });
+
+      // ==========================================
+      // DESCONTAR STOCK SOLO SI LA NUEVA
+      // VENTA ESTÁ ACTIVA
+      // ==========================================
+
+      if (nuevaVentaActiva) {
 
         producto.stock -= item.cantidad;
 
@@ -469,37 +518,39 @@ class VentaController {
 
       }
 
-      await transaction.commit();
-
-      const ventaActualizada = await Venta.findByPk(id, {
-
-        include: [
-          { model: Cliente },
-          { model: Usuario },
-          {
-            model: DetalleVenta,
-            include: [Producto]
-          }
-        ]
-
-      });
-
-      res.json({
-        message: "Venta actualizada correctamente",
-        venta: ventaActualizada
-      });
-
-    } catch (error) {
-
-      await transaction.rollback();
-
-      res.status(500).json({
-        error: error.message
-      });
-
     }
 
+    await transaction.commit();
+
+    const ventaActualizada = await Venta.findByPk(id, {
+
+      include: [
+        { model: Cliente },
+        { model: Usuario },
+        {
+          model: DetalleVenta,
+          include: [Producto]
+        }
+      ]
+
+    });
+
+    res.json({
+      message: "Venta actualizada correctamente",
+      venta: ventaActualizada
+    });
+
+  } catch (error) {
+
+    await transaction.rollback();
+
+    res.status(500).json({
+      error: error.message
+    });
+
   }
+
+}
 
   // ==========================================
   // ELIMINAR VENTA

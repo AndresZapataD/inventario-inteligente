@@ -16,6 +16,9 @@ import ClienteForm from "../pages/ClienteForm";
 import VentaList from "../pages/ventas/VentaList";
 import VentaForm from "../pages/ventas/VentaForm";
 
+import CategoriaForm from "../pages/categorias/CategoriaForm";
+import Categorias from "../pages/categorias/Categorias";
+
 export default function AppRoutes() {
 
   return (
@@ -77,6 +80,21 @@ export default function AppRoutes() {
         <Route
           path="/ventas/editar/:id"
           element={<VentaForm />}
+        />
+
+        <Route
+          path="/categorias/nueva"
+          element={<CategoriaForm />}
+        />
+
+        <Route
+          path="/categorias/:id/editar"
+          element={<CategoriaForm />}
+        />
+
+        <Route
+          path="/categorias"
+          element={<Categorias />}
         />
 
       </Routes>

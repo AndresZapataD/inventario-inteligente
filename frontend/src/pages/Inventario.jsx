@@ -28,6 +28,7 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import CategoriaForm from "./categorias/CategoriaForm.jsx";
 
 export default function Inventario() {
 
@@ -197,19 +198,39 @@ Stock: ${producto.stock}
             Inventario
           </Typography>
 
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() =>
-              navigate("/productos/nuevo")
-            }
-          >
-            Nuevo Producto
-          </Button>
+         <Box
+  sx={{
+    display: "flex",
+    justifyContent: "flex-end",
+    gap: 2,
+    mb: 2
+  }}
+>
+
+  <Button
+    variant="contained"
+    startIcon={<AddIcon />}
+    onClick={() =>
+      navigate("/productos/nuevo")
+    }
+  >
+    Nuevo Producto
+  </Button>
+
+  <Button
+    variant="contained"
+    startIcon={<AddIcon />}
+    onClick={() =>
+      navigate("/categorias/nueva")
+    }
+  >
+    Nueva Categoría
+  </Button>
+
+</Box>
 
         </Stack>
 
-        {/* TABLA */}
 
         <Paper
           elevation={3}
@@ -225,7 +246,7 @@ Stock: ${producto.stock}
               <Box
                 sx={{
                   display: "flex",
-                  justifyContent: "center",
+                  justifyContent: "right",
                   p: 5
                 }}
               >

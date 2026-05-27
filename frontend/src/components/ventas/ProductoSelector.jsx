@@ -23,7 +23,6 @@ export default function ProductoSelector({
     try {
       const response = await ProductoService.getAll();
 
-      // 🔥 seguridad: siempre array
       setCatalogo(Array.isArray(response) ? response : []);
 
     } catch (error) {
@@ -41,7 +40,7 @@ export default function ProductoSelector({
     if (!productoId) return;
 
     const producto = catalogo.find(
-      (p) => p.id === Number(productoId) // ✔ FIX IMPORTANTE
+      (p) => p.id === Number(productoId)
     );
 
     if (!producto) return;
